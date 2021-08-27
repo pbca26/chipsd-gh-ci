@@ -84,8 +84,9 @@ jobs:
           brew install automake libtool boost pkg-config libevent zeromq libnatpmp miniupnpc
       - name: Build (macOS)
         run: |
-          git clone https://github.com/who-biz/bitcoin/tree/who-biz chips
+          git clone https://github.com/who-biz/bitcoin chips
           cd chips
+          git checout who-biz
           ./autogen.sh
           ./configure --with-gui=no --disable-tests --without-miniupnpc --enable-experimental-asm --enable-static --disable-shared
           #zip --junk-paths chips-osx src/chipsd src/chips-cli
