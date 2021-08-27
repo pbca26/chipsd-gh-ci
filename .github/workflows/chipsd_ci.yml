@@ -86,7 +86,7 @@ jobs:
         run: |
           git clone https://github.com/who-biz/bitcoin chips
           cd chips
-          git checout who-biz
+          git checkout who-biz
           ./autogen.sh
           ./configure --with-gui=no --disable-tests --without-miniupnpc --enable-experimental-asm --enable-static --disable-shared
           #zip --junk-paths chips-osx src/chipsd src/chips-cli
