@@ -89,6 +89,7 @@ jobs:
           git checkout who-biz
           ./autogen.sh
           ./configure --with-gui=no --disable-tests --without-miniupnpc --enable-experimental-asm --enable-static --disable-shared --with-incompatible-bdb
+          make
           #zip --junk-paths chips-osx src/chipsd src/chips-cli
       - name: Upload chips-osx.zip as artifact
         uses: actions/upload-artifact@v1
