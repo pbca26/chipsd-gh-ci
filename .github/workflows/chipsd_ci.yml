@@ -48,6 +48,7 @@ jobs:
   #                python3-pip \
   #                libcurl4-openssl-dev \
   #                libssl-dev -y
+  #        sudo apt-get install build-essential libtool autotools-dev automake pkg-config bsdmainutils libevent-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev libzmq3-dev
   #     - name: Build (Linux)
   #       if: runner.os == 'Linux'
   #       run: |
@@ -56,11 +57,11 @@ jobs:
   #         ./autogen.sh
   #         ./configure --with-gui=no --disable-tests --without-miniupnpc --enable-experimental-asm --enable-static --disable-shared
   #         make -j$(nproc)
-  #     - name: Upload komodo-linux.zip as artifact
+  #     - name: Upload chips-linux.zip as artifact
   #       uses: actions/upload-artifact@v1
   #       with:
-  #         name: komodo-linux
-  #         path: ./komodo/komodo-linux.zip
+  #         name: chips-linux
+  #         path: ./chips/chips-linux.zip
 
   osx-build:
     name: OSX Build
@@ -87,10 +88,13 @@ jobs:
           git clone https://github.com/who-biz/bitcoin chips
           cd chips
           git checkout who-biz
+          cd chips/depends
+          make HOST=x86_64-apple-darwin18 -j$(sysctl -n hw.ncpu)
+          cd ..
           ./autogen.sh
-          ./configure --with-gui=no --disable-tests --without-miniupnpc --enable-experimental-asm --enable-static --disable-shared --with-incompatible-bdb
+          CONFIG_SITE=$PWD/depends/x86_64-apple-darwin18/share/config.site ./configure
           make
-          #zip --junk-paths chips-osx src/chipsd src/chips-cli
+          zip --junk-paths chips-osx src/chipsd src/chips-cli
       - name: Upload chips-osx.zip as artifact
         uses: actions/upload-artifact@v1
         with:
@@ -103,14 +107,14 @@ jobs:
       #needs: [linux-build, osx-build]
       needs: [osx-build]
       steps:
-        - name: Download komodo-linux.zip
+        # - name: Download chips-linux.zip
+        #   uses: actions/download-artifact@v1
+        #   with:
+        #     name: chips-linux  
+        - name: Download chips-osx.zip
           uses: actions/download-artifact@v1
           with:
-            name: komodo-linux  
-        - name: Download komodo-osx.zip
-          uses: actions/download-artifact@v1
-          with:
-            name: komodo-osx
+            name: chips-osx
 
         - name: Extract branch name
           shell: bash
@@ -132,16 +136,16 @@ jobs:
             release_name: CD Release ${{ steps.shortify_commit.outputs.sha_short }} ${{ steps.extract_branch.outputs.branch }}
             draft: false
             prerelease: true
-        - name: Upload Linux Release Asset
-          id: upload-linux-release-asset 
-          uses: actions/upload-release-asset@latest
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-            asset_path: komodo-linux/komodo-linux.zip
-            asset_name: komodo_${{ steps.shortify_commit.outputs.sha_short }}_${{ steps.extract_branch.outputs.branch }}_linux.zip
-            asset_content_type: application/zip
+        # - name: Upload Linux Release Asset
+        #   id: upload-linux-release-asset 
+        #   uses: actions/upload-release-asset@latest
+        #   env:
+        #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #   with:
+        #     upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        #     asset_path: chips-linux/chips-linux.zip
+        #     asset_name: chips_${{ steps.shortify_commit.outputs.sha_short }}_${{ steps.extract_branch.outputs.branch }}_linux.zip
+        #     asset_content_type: application/zip
         - name: Upload OSX Release Asset
           id: upload-osx-release-asset 
           uses: actions/upload-release-asset@latest
@@ -149,7 +153,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
             upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-            asset_path: komodo-osx/komodo-osx.zip
-            asset_name: komodo_${{ steps.shortify_commit.outputs.sha_short }}_${{ steps.extract_branch.outputs.branch }}_osx.zip
+            asset_path: chips-osx/chips-osx.zip
+            asset_name: chips_${{ steps.shortify_commit.outputs.sha_short }}_${{ steps.extract_branch.outputs.branch }}_osx.zip
             asset_content_type: application/zip
 
