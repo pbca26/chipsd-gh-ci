@@ -88,7 +88,7 @@ jobs:
           git clone https://github.com/who-biz/bitcoin chips
           cd chips
           git checkout who-biz
-          cd chips/depends
+          cd depends
           make HOST=x86_64-apple-darwin18 -j$(sysctl -n hw.ncpu)
           cd ..
           ./autogen.sh
