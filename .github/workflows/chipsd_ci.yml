@@ -88,8 +88,14 @@ jobs:
           git clone https://github.com/who-biz/bitcoin chips
           cd chips
           git checkout who-biz
+          cd depends
+          make HOST=x86_64-apple-darwin18 -j$(sysctl -n hw.ncpu)
+          cd ..
           ./autogen.sh
-          ./configure --with-gui=no --disable-tests --without-miniupnpc --enable-experimental-asm --enable-static --disable-shared --with-incompatible-bdb
+          CONFIG_SITE=$PWD/depends/x86_64-apple-darwin18/share/config.site ./configure --with-gui=no
+          make
+          #./autogen.sh
+          #./configure --with-gui=no --disable-tests --without-miniupnpc --enable-experimental-asm --enable-static --disable-shared --with-incompatible-bdb
           make
           zip --junk-paths chips-osx src/chipsd src/chips-cli
       - name: Upload chips-osx.zip as artifact
