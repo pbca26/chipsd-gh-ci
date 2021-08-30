@@ -15,6 +15,7 @@ on:
 
 jobs:
 
+  # check build instructions here https://github.com/chips-blockchain/chips/blob/master/build.sh 
   # linux-build:
   #   name: Linux Build
   #   # using there as old release as possible with GHA worker to provide better compatibility
