@@ -75,17 +75,10 @@ jobs:
           brew update
           brew upgrade
           brew tap discoteq/discoteq; brew install flock
-          brew install autoconf autogen automake
-          brew install gcc@8
-          brew install binutils
-          brew install protobuf
-          brew install coreutils
-          brew install wget
-          brew install python3
-          brew install berkeley-db@4
           # ref: https://github.com/bitcoin/bitcoin/blob/master/doc/build-osx.md
           # note: run brew install libnatpmp if you use pre-built chipsd from this repo
-          brew install automake libtool boost pkg-config libevent zeromq libnatpmp miniupnpc
+          brew install gcc@8 berkeley-db@4 binutils protobuf coreutils wget python3 \
+                autoconf autogen automake libtool boost pkg-config libevent zeromq libnatpmp miniupnpc
       - name: Build (macOS)
         run: |
           git clone https://github.com/who-biz/bitcoin chips
