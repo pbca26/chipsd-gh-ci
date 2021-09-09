@@ -53,7 +53,7 @@ jobs:
             ./autogen.sh
             ./configure --with-gui=no --disable-tests --without-miniupnpc --enable-experimental-asm --enable-static --disable-shared --with-incompatible-bdb
             make -j$(nproc) 
-            zip --junk-paths chips-osx src/chipsd src/chips-cli
+            zip --junk-paths chips-linux src/chipsd src/chips-cli
       - name: Upload chips-linux.zip as artifact
         uses: actions/upload-artifact@v1
         with:
